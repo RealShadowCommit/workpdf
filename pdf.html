@@ -1,0 +1,2441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>WorkPDF - Free Client-Side Multi-Page PDF & Media Engine</title>
+
+  <!-- Google SEO & Metadata -->
+  <meta name="description" content="Convert 50+ photos to dedicated multi-page A4 PDFs, crop, rotate 90 degrees, compress to exact MB/KB limits, and merge PDFs client-side with zero data uploads with WorkPDF.">
+  <meta name="keywords" content="WorkPDF, photo to pdf, compress image to 1mb, pdf merge, client side pdf maker, rotate crop pdf online">
+  <meta name="author" content="Roshan Singh">
+
+  <!-- Open Graph & Social Indexing -->
+  <meta property="og:title" content="WorkPDF - Client-Side PDF & Media Engine">
+  <meta property="og:description" content="High-precision multi-page PDF generation, independent image compression, edge cropping, and PDF merging.">
+  <meta property="og:image" content="logo.png">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon / Logo for Browser Tabs & Google Search -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <!-- Google Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "WorkPDF",
+    "description": "Client-side private tool to generate multi-page PDFs from images with per-page MB compression and merging.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "logo": "logo.png",
+    "author": {
+      "@type": "Person",
+      "name": "Roshan Singh"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Core Client Libraries: jsPDF, JSZip, PDF-Lib & Cropper.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg-cream: #fbf8f2;
+      --surface-cream: #f5ede0;
+      --card-white: #ffffff;
+      --border-warm: #e8ded1;
+      --border-focus: #2563eb;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --brand-blue: #2563eb;
+      --brand-indigo: #4f46e5;
+      --emerald: #059669;
+      --rose: #e11d48;
+      --amber: #d97706;
+      --shadow-sm: 0 2px 8px rgba(30, 41, 59, 0.05);
+      --shadow-md: 0 12px 30px rgba(30, 41, 59, 0.08);
+      --shadow-lg: 0 20px 50px rgba(30, 41, 59, 0.12);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg-cream);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.04) 0px, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(217, 119, 6, 0.04) 0px, transparent 40%),
+        radial-gradient(circle at 50% 70%, rgba(5, 150, 105, 0.03) 0px, transparent 55%);
+      color: var(--text-dark);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .bg-grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      background: rgba(251, 248, 242, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-warm);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 2px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-warm);
+      display: block;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      color: var(--text-dark);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--brand-blue); }
+
+    .nav-cta-btn {
+      background: var(--brand-blue);
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      padding: 70px 24px 45px 24px;
+      text-align: center;
+      max-width: 980px;
+      margin: 0 auto;
+      z-index: 10;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 6vw, 54px);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.2px;
+      color: var(--text-dark);
+      margin-bottom: 18px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #9333ea 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(14px, 2vw, 17px);
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 30px auto;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Studio Window */
+    .studio-section {
+      position: relative;
+      max-width: 1360px;
+      margin: 0 auto 90px auto;
+      padding: 0 16px;
+      z-index: 10;
+    }
+
+    .studio-window {
+      background: var(--card-white);
+      border: 1px solid var(--border-warm);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      height: 780px;
+    }
+
+    .studio-header {
+      background: var(--surface-cream);
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-warm);
+      gap: 12px;
+    }
+
+    .studio-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tabs-bar {
+      display: flex;
+      background: #e7dfd2;
+      padding: 4px;
+      border-radius: 9px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--brand-blue);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-add { background: var(--brand-blue); color: #fff; }
+    .btn-dl { background: var(--emerald); color: #fff; }
+    .btn-zip { background: var(--amber); color: #fff; }
+    .btn-merge { background: var(--brand-indigo); color: #fff; }
+    .btn-clr {
+      background: #fff;
+      border: 1px solid #fecdd3;
+      color: var(--rose);
+    }
+
+    .studio-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative;
+      background: #faf8f5;
+    }
+
+    .viewer-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    .canvas-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+      overflow-y: auto;
+      background: #f6efe3;
+    }
+
+    .page-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      background: #ffffff;
+      padding: 7px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-warm);
+      font-size: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-cream);
+      padding: 4px 8px;
+      border-radius: 7px;
+      border: 1px solid var(--border-warm);
+    }
+
+    .preset-chip {
+      background: #ffffff;
+      color: var(--text-dark);
+      border: 1px solid var(--border-warm);
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .preset-chip:hover {
+      background: var(--brand-blue);
+      color: #ffffff;
+      border-color: var(--brand-blue);
+    }
+
+    .target-input {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      color: var(--text-dark);
+      padding: 3px 6px;
+      border-radius: 5px;
+      font-size: 11px;
+      width: 55px;
+      outline: none;
+      font-weight: 700;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .target-select {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      color: var(--text-dark);
+      padding: 3px 5px;
+      border-radius: 5px;
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tool-icon-btn {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      color: var(--text-dark);
+      padding: 5px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .tool-icon-btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    .active-a4-box {
+      width: 100%;
+      max-width: 440px;
+      height: 58vh;
+      max-height: 590px;
+      background: #ffffff;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--border-warm);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 16px;
+      position: relative;
+    }
+
+    .img-wrapper {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .active-a4-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.15s ease-out;
+    }
+
+    .canvas-footer {
+      font-size: 10px;
+      color: var(--text-muted);
+      padding-top: 6px;
+      border-top: 1px dashed var(--border-warm);
+      width: 100%;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .thumbnails-sidebar {
+      width: 240px;
+      background: #ffffff;
+      border-left: 1px solid var(--border-warm);
+      padding: 14px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .thumb-card {
+      background: var(--surface-cream);
+      border: 1px solid var(--border-warm);
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .thumb-card:hover { border-color: var(--brand-blue); }
+    .thumb-card.active {
+      border-color: var(--brand-blue);
+      background: #eff6ff;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .thumb-preview-box {
+      width: 90px;
+      height: 125px;
+      background: #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px;
+      border: 1px solid var(--border-warm);
+    }
+    .thumb-preview-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .thumb-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0 2px;
+    }
+
+    .thumb-target-badge {
+      font-size: 10px;
+      background: #dbeafe;
+      border: 1px solid #bfdbfe;
+      color: var(--brand-blue);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .merge-layout {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 16px;
+      overflow-y: auto;
+      width: 100%;
+      background: #f6efe3;
+    }
+
+    .merge-container {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .upload-dropzone {
+      border: 2px dashed #cbd5e1;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 34px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .upload-dropzone:hover {
+      border-color: var(--brand-indigo);
+      background: #faf5ff;
+      transform: scale(1.01);
+    }
+
+    .merge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .merge-item {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .merge-badge {
+      background: var(--brand-indigo);
+      color: #fff;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 800;
+    }
+
+    .mini-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: var(--text-dark);
+      padding: 5px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .mini-btn.del {
+      background: #fff1f2;
+      border-color: #fecdd3;
+      color: var(--rose);
+    }
+
+    .empty-state {
+      max-width: 500px;
+      text-align: center;
+      padding: 32px 24px;
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-heading { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--text-dark); }
+    .empty-paragraph { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+
+    .features-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .feat-tag {
+      background: var(--surface-cream);
+      border: 1px solid var(--border-warm);
+      color: var(--text-dark);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* Long Page Showcase Cards */
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto 100px auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .section-tag {
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .section-description {
+      color: var(--text-muted);
+      font-size: 15px;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-img-wrap {
+      width: 100%;
+      height: 170px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .feature-card:hover .card-img-wrap img { transform: scale(1.05); }
+
+    .card-content {
+      padding: 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .card-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Enhanced Steps Grid with Photographs */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 26px;
+      margin-top: 40px;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .step-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-img-wrap {
+      width: 100%;
+      height: 190px;
+      position: relative;
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+
+    .step-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .step-card:hover .step-img-wrap img {
+      transform: scale(1.04);
+    }
+
+    .step-number-pill {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(37, 99, 235, 0.92);
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .step-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .table-card {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-warm);
+    }
+
+    th {
+      background: var(--surface-cream);
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    td { color: var(--text-muted); }
+
+    .highlight-cell {
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    /* Experience & Reviews Section */
+    .review-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    .review-form-card {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .form-input, .form-textarea, .form-select {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-warm);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--brand-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: #ffffff;
+    }
+
+    .star-rating-box {
+      display: flex;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 24px;
+      color: #cbd5e1;
+      margin-top: 4px;
+    }
+    .star-rating-box .star {
+      transition: color 0.15s, transform 0.15s;
+    }
+    .star-rating-box .star.active {
+      color: #f59e0b;
+      transform: scale(1.1);
+    }
+
+    .reviews-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .review-item {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .review-user-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .review-avatar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface-cream);
+      border: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: var(--brand-blue);
+      font-size: 14px;
+    }
+
+    .reviewer-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .review-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .review-stars {
+      color: #f59e0b;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    .review-message {
+      font-size: 13px;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    .faq-list {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 12px;
+      padding: 18px 22px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s;
+    }
+    .faq-item:hover { border-color: var(--brand-blue); }
+
+    .faq-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-a {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* Footer with Developer Contact Card */
+    footer {
+      background: #ede4d5;
+      border-top: 1px solid var(--border-warm);
+      padding: 50px 24px 30px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-developer-card {
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .footer-dev-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .footer-links-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .contact-icon-svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .footer-email {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: var(--brand-blue);
+    }
+    .footer-email:hover {
+      background: #dbeafe;
+      transform: translateY(-2px);
+    }
+    .footer-email .contact-icon-svg path,
+    .footer-email .contact-icon-svg rect {
+      stroke: var(--brand-blue);
+    }
+
+    .footer-insta {
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
+      color: #db2777;
+    }
+    .footer-insta:hover {
+      background: #fce7f3;
+      transform: translateY(-2px);
+    }
+    .footer-insta .contact-icon-svg {
+      stroke: #db2777;
+    }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* Modal / Cropper Popup */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .cropper-modal-box {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cropper-modal-header {
+      padding: 12px 18px;
+      background: var(--surface-cream);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-warm);
+    }
+
+    .cropper-img-container {
+      max-height: 440px;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .cropper-img-container img { max-width: 100%; display: block; }
+
+    .cropper-modal-footer {
+      padding: 12px 18px;
+      background: var(--surface-cream);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      border-top: 1px solid var(--border-warm);
+    }
+
+    /* Progress Loader Modal */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 41, 59, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+      padding: 20px;
+    }
+
+    .loader-box {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      padding: 24px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-lg);
+    }
+    .bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+    .bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--brand-blue), var(--emerald)); }
+
+    /* Mobile Breakpoints */
+    @media (max-width: 860px) {
+      nav { padding: 12px 16px; }
+      .nav-links { display: none; }
+      .studio-window { height: auto; min-height: 720px; }
+      .viewer-layout { flex-direction: column; }
+      .canvas-center { padding: 8px; min-height: 480px; }
+      .active-a4-box { height: 50vh; max-width: 92vw; }
+      .thumbnails-sidebar {
+        width: 100%;
+        height: 145px;
+        border-left: none;
+        border-top: 1px solid var(--border-warm);
+        flex-direction: row;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px 10px;
+      }
+      .sidebar-title { display: none; }
+      .thumb-preview-box { width: 68px; height: 95px; }
+      .btn-group { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .btn-group .btn { justify-content: center; }
+      .review-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid-overlay"></div>
+
+  <!-- Top Sticky Navigation Bar -->
+  <nav>
+    <a href="#" class="nav-brand">
+      <img src="logo.png" alt="WorkPDF Logo" class="brand-logo-img">
+      <div class="brand-name">WorkPDF</div>
+    </a>
+
+    <div class="nav-links">
+      <a href="#studio" class="nav-link">Studio Editor</a>
+      <a href="#features" class="nav-link">Capabilities</a>
+      <a href="#how-it-works" class="nav-link">How It Works</a>
+      <a href="#reviews" class="nav-link">User Reviews</a>
+      <a href="#security" class="nav-link">Privacy Matrix</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="#contact" class="nav-link" style="color:var(--brand-blue); font-weight:700;">Contact</a>
+    </div>
+
+    <!-- CTA Button to Studio -->
+    <a href="#studio" class="nav-cta-btn">Open Studio</a>
+  </nav>
+
+  <!-- Hero Header Section -->
+  <section class="hero-section">
+    <div class="hero-badge">
+      <img src="logo.png" alt="WorkPDF Icon" style="width:16px; height:16px; object-fit:contain;">
+      <span>100% Client-Side Privacy Engine</span>
+    </div>
+
+    <h1 class="hero-title">
+      Transform Images into <span>Universal Multi-Page PDFs</span> With Zero Compression Loss
+    </h1>
+    <p class="hero-subtitle">
+      Convert 50+ document photos into dedicated single-page PDF files, merge existing PDF documents, crop edges, rotate orientation, and enforce strict file-size limits (MB/KB)—entirely inside your browser with zero server uploads with WorkPDF.
+    </p>
+    <div class="hero-buttons">
+      <a href="#studio" class="nav-cta-btn" style="padding: 12px 28px; font-size: 14px;">Launch WorkPDF</a>
+      <a href="#reviews" class="btn" style="background: #ffffff; border: 1px solid var(--border-warm); color: var(--text-dark); padding: 12px 24px; font-size: 14px;">Share Experience</a>
+    </div>
+  </section>
+
+  <!-- Live Studio Section -->
+  <section class="studio-section" id="studio">
+    <div class="studio-window">
+      
+      <!-- Studio Header Controls -->
+      <div class="studio-header">
+        <div class="studio-title">
+          <img src="logo.png" alt="Icon" style="width:20px; height:20px; object-fit:contain;">
+          <span>WorkPDF Workspace</span>
+          <span style="font-size:10px; background:#eff6ff; color:var(--brand-blue); border:1px solid #bfdbfe; padding:2px 8px; border-radius:12px; text-transform:uppercase;">Engine v3.5</span>
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="tabs-bar">
+          <button class="tab-btn active" id="tabImages" onclick="switchMode('images')">🖼️ Photos To PDF</button>
+          <button class="tab-btn" id="tabMerge" onclick="switchMode('merge')">📑 PDF Merger</button>
+        </div>
+
+        <!-- Photos to PDF Actions -->
+        <div class="btn-group" id="imageBtnGroup">
+          <input type="file" id="filePicker" accept="image/*" multiple style="display:none;" onchange="loadImages(event)">
+          <button class="btn btn-add" onclick="document.getElementById('filePicker').click()">➕ Upload Photos</button>
+          <button class="btn btn-dl" onclick="downloadReceiverFriendlyPDF()">📄 Download PDF</button>
+          <button class="btn btn-zip" onclick="downloadAllImagesAsZip()">📦 Download ZIP</button>
+          <button class="btn btn-clr" onclick="resetAll()">🗑️ Reset</button>
+        </div>
+
+        <!-- PDF Merger Actions -->
+        <div class="btn-group" id="mergeBtnGroup" style="display:none;">
+          <input type="file" id="pdfPicker" accept="application/pdf" multiple style="display:none;" onchange="loadPDFs(event)">
+          <button class="btn btn-add" onclick="document.getElementById('pdfPicker').click()">➕ Select PDFs</button>
+          <button class="btn btn-merge" onclick="mergeAllPDFs()">⚡ Merge Documents</button>
+          <button class="btn btn-clr" onclick="clearMergeList()">🗑️ Clear</button>
+        </div>
+      </div>
+
+      <!-- Studio Inner Body -->
+      <div class="studio-body">
+
+        <!-- 1. Photos to PDF Workspace -->
+        <div class="viewer-layout" id="imageLayout">
+          <div class="canvas-center">
+            
+            <div id="activeControls" style="display:none; flex-direction:column; align-items:center; width:100%;">
+              <!-- Interactive Toolbar -->
+              <div class="page-toolbar">
+                <button class="tool-icon-btn" onclick="switchPage(-1)">◀ Prev</button>
+                <span id="pageIndicator" style="font-weight:800; color:var(--brand-blue); font-size:11px; font-family:'JetBrains Mono';">1 / 1</span>
+                <button class="tool-icon-btn" onclick="switchPage(1)">Next ▶</button>
+
+                <!-- Rotation -->
+                <div class="toolbar-group">
+                  <button class="tool-icon-btn" onclick="rotateCurrentPage(-90)" title="Rotate Left 90°">↺ -90°</button>
+                  <button class="tool-icon-btn" onclick="rotateCurrentPage(90)" title="Rotate Right 90°">↻ +90°</button>
+                </div>
+
+                <!-- Crop Trigger -->
+                <button class="tool-icon-btn" style="border-color: #a7f3d0; color: var(--emerald);" onclick="openCropModal()">✂️ Crop</button>
+
+                <!-- Individual Size Target Input -->
+                <div class="toolbar-group">
+                  <span style="color:var(--brand-blue); font-weight:700;">Size:</span>
+                  <input type="number" id="curTargetVal" class="target-input" value="1024" min="30" max="25000" oninput="updateCurTargetSize()">
+                  <select id="curTargetUnit" class="target-select" onchange="updateCurTargetSize()">
+                    <option value="KB">KB</option>
+                    <option value="MB">MB</option>
+                  </select>
+
+                  <button class="preset-chip" onclick="setQuickPreset(250, 'KB')">250K</button>
+                  <button class="preset-chip" onclick="setQuickPreset(500, 'KB')">500K</button>
+                  <button class="preset-chip" onclick="setQuickPreset(1, 'MB')">1M</button>
+                </div>
+
+                <!-- Margin Scale Slider -->
+                <div class="toolbar-group">
+                  <span>Zoom: <b id="scaleText" style="color:var(--brand-blue);">85%</b></span>
+                  <input type="range" id="scaleSlider" min="20" max="100" value="85" oninput="changeCurrentScale(this.value)">
+                </div>
+
+                <button class="tool-icon-btn" style="color:var(--brand-blue);" onclick="downloadSingleImage(currentIndex)">📥 Image</button>
+                <button class="tool-icon-btn" style="color:var(--rose);" onclick="deleteCurrentPage()">✕ Remove</button>
+              </div>
+
+              <!-- Fixed A4 Canvas Sheet -->
+              <div class="active-a4-box">
+                <div class="img-wrapper">
+                  <img id="mainDisplayImg" src="" />
+                </div>
+                <div class="canvas-footer">
+                  PAGE <span id="footerPageNum">1</span> — 
+                  ORIG: <span id="footerOrigSize" style="color:var(--rose);">--</span> | 
+                  TARGET: <span id="footerTargetSize" style="color:var(--emerald);">1024 KB</span> |
+                  ROTATION: <span id="footerAngle">0°</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty Guidance Notice -->
+            <div class="empty-state" id="emptyNotice">
+              <div class="empty-icon">📁</div>
+              <h3 class="empty-heading">No Photos Loaded in WorkPDF Studio</h3>
+              <p class="empty-paragraph">
+                Select your photos (up to 50+ images). Each photo will be automatically transformed into an independent A4 PDF page with dedicated size compression limits, interactive cropping, and orientation alignment.
+              </p>
+              <div class="features-pill-row">
+                <span class="feat-tag">⚡ 1 Photo = 1 Dedicated Page</span>
+                <span class="feat-tag">🗜️ Per-Page Size Optimizer</span>
+                <span class="feat-tag">✂️ Edge Cropper</span>
+                <span class="feat-tag">🔄 90° Rotation</span>
+                <span class="feat-tag">🔒 Zero Cloud Uploads</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Thumbnails Strip -->
+          <div class="thumbnails-sidebar" id="thumbsSidebar">
+            <div class="sidebar-title">Document Pages</div>
+            <div id="thumbsList" style="display:flex; gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- 2. PDF Merge Workspace -->
+        <div class="merge-layout" id="mergeLayout">
+          <div class="merge-container">
+            <div class="upload-dropzone" onclick="document.getElementById('pdfPicker').click()">
+              <div style="font-size:32px; margin-bottom:6px;">📑</div>
+              <h3 style="color:var(--brand-indigo); font-size:16px; margin-bottom:4px; font-weight:800;">Upload Existing PDF Files</h3>
+              <p style="color:var(--text-muted); font-size:12px; max-width:440px; margin:0 auto; line-height:1.5;">
+                Select two or more separate PDF documents to combine into a single seamless document file directly inside browser memory.
+              </p>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+              <h4 style="font-size:13px; color:var(--text-dark); font-weight:700;">Merge Queue (<span id="mergeCount" style="color:var(--brand-blue);">0 Files</span>):</h4>
+              <span style="font-size:11px; color:var(--text-muted);">(Top document appears first)</span>
+            </div>
+
+            <div class="merge-list" id="mergeList">
+              <div class="empty-state" id="mergeEmpty" style="margin-top:20px; padding:20px;">
+                <p style="font-size:13px; color:var(--text-muted);">No PDF files queued. Click the box above to add files.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase Section with Photography -->
+  <section class="section-container" id="features">
+    <div class="section-header">
+      <div class="section-tag">Core Architecture</div>
+      <h2 class="section-title">Built for Precision Document Workflows</h2>
+      <p class="section-description">
+        Whether you are preparing multi-page government applications, academic portfolios, legal documentation, or archiving receipts, WorkPDF executes every operation with high visual integrity.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Card 1 -->
+      <div class="feature-card">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80" alt="Document Processing" />
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">1 Photo = 1 Dedicated Page</h3>
+          <p class="card-text">
+            Guarantees strict separation of images. Never merges multiple photos awkwardly onto a single sheet; every uploaded photo receives its own standard A4 page layout with automatic centering.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="feature-card">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" alt="Client Side Security" />
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Strict Size Limitation (MB/KB)</h3>
+          <p class="card-text">
+            Meet strict portal limits (e.g., 2MB down to 1MB or 500KB) with per-image binary-search compression. Scale resolution and JPEG stream quality dynamically before compiling into PDF.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="feature-card">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80" alt="Interactive Crop" />
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Precision Crop & 90° Rotation</h3>
+          <p class="card-text">
+            Correct sideways orientation immediately using in-memory angle transforms. Crop unwanted table margins or camera shadows before document synthesis.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="feature-card">
+        <div class="card-img-wrap">
+          <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80" alt="Archive PDF" />
+        </div>
+        <div class="card-content">
+          <h3 class="card-title">Fast In-Memory PDF Merger</h3>
+          <p class="card-text">
+            Merge multiple separate PDF documents into one single comprehensive file using WebAssembly and PDF-Lib. Reorder pages and files seamlessly.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section with Step Photographs -->
+  <section class="section-container" id="how-it-works">
+    <div class="section-header">
+      <div class="section-tag">Step-by-Step Workflow</div>
+      <h2 class="section-title">How To Create & Optimize Documents</h2>
+      <p class="section-description">
+        Three simple, visual steps from raw camera captures to professional, portal-ready PDF files with WorkPDF.
+      </p>
+    </div>
+
+    <div class="steps-grid">
+      <!-- Step 1 with Photo -->
+      <div class="step-card">
+        <div class="step-img-wrap">
+          <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80" alt="Batch Photo Upload Step" />
+          <span class="step-number-pill">STEP 01</span>
+        </div>
+        <div class="step-body">
+          <h3 class="step-title">Upload Batch Photos</h3>
+          <p class="step-text">
+            Drag and drop or select up to 50+ photos from your phone gallery or PC. WorkPDF immediately allocates an independent A4 canvas sheet for every uploaded image.
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 2 with Photo -->
+      <div class="step-card">
+        <div class="step-img-wrap">
+          <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=600&q=80" alt="Interactive Crop and Compress Step" />
+          <span class="step-number-pill">STEP 02</span>
+        </div>
+        <div class="step-body">
+          <h3 class="step-title">Set Angles, Crop & Size</h3>
+          <p class="step-text">
+            Correct sideways phone photos with 90° rotation buttons, remove table borders with the interactive crop tool, and define exact target sizes (e.g. 500 KB or 1 MB).
+          </p>
+        </div>
+      </div>
+
+      <!-- Step 3 with Photo -->
+      <div class="step-card">
+        <div class="step-img-wrap">
+          <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80" alt="Compile Multi-Page PDF Step" />
+          <span class="step-number-pill">STEP 03</span>
+        </div>
+        <div class="step-body">
+          <h3 class="step-title">Compile Single PDF or ZIP</h3>
+          <p class="step-text">
+            Hit Download PDF to generate a standardized, multi-page document ready for government portals, job applications, or emails—or save optimized photos as a ZIP.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Experience & Review Section -->
+  <section class="section-container" id="reviews">
+    <div class="section-header">
+      <div class="section-tag">Community Feedback</div>
+      <h2 class="section-title">Share Your Experience & Reviews</h2>
+      <p class="section-description">
+        Tell us how WorkPDF helped your document preparation workflow. Your feedback helps us continuously improve the engine!
+      </p>
+    </div>
+
+    <div class="review-layout">
+      <!-- Review Input Form -->
+      <div class="review-form-card">
+        <h3 style="font-size:18px; font-weight:800; color:var(--text-dark); margin-bottom:6px;">Write a Review</h3>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:18px;">Share your rating and thoughts with fellow creators.</p>
+
+        <form id="reviewForm" onsubmit="submitReview(event)">
+          <div class="form-group">
+            <label for="reviewName">Your Name</label>
+            <input type="text" id="reviewName" class="form-input" placeholder="e.g. Rahul Sharma" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reviewRole">Document Use-case</label>
+            <input type="text" id="reviewRole" class="form-input" placeholder="e.g. Job Application / Govt Portal / Office" required />
+          </div>
+
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-rating-box" id="starRatingBox">
+              <span class="star active" data-val="1">★</span>
+              <span class="star active" data-val="2">★</span>
+              <span class="star active" data-val="3">★</span>
+              <span class="star active" data-val="4">★</span>
+              <span class="star active" data-val="5">★</span>
+            </div>
+            <input type="hidden" id="reviewRatingVal" value="5">
+          </div>
+
+          <div class="form-group">
+            <label for="reviewText">Your Experience</label>
+            <textarea id="reviewText" class="form-textarea" rows="4" placeholder="How was the compression speed, quality, and rotation features?" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-add" style="width:100%; justify-content:center; padding:11px; margin-top:8px;">
+            Submit Review
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Reviews Stream -->
+      <div class="reviews-stream" id="reviewsContainer">
+        <!-- Review 1 -->
+        <div class="review-item">
+          <div class="review-user-row">
+            <div class="review-avatar-wrap">
+              <div class="avatar-circle">A</div>
+              <div>
+                <div class="reviewer-name">Amit Verma</div>
+                <div class="review-date">Government Portal Applicant • 2 days ago</div>
+              </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-message">
+            "The individual MB compressor is an absolute lifesaver! I had to upload 6 documents strictly under 1MB each for an application. WorkPDF squeezed them perfectly without making the text blurry."
+          </p>
+        </div>
+
+        <!-- Review 2 -->
+        <div class="review-item">
+          <div class="review-user-row">
+            <div class="review-avatar-wrap">
+              <div class="avatar-circle" style="background:#eff6ff; color:#2563eb;">P</div>
+              <div>
+                <div class="reviewer-name">Pooja Nair</div>
+                <div class="review-date">University Student • 4 days ago</div>
+              </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-message">
+            "Loved the 90-degree rotate and crop features. Camera captures usually look tilted, but I was able to straighten every page right on the screen before downloading the final PDF."
+          </p>
+        </div>
+
+        <!-- Review 3 -->
+        <div class="review-item">
+          <div class="review-user-row">
+            <div class="review-avatar-wrap">
+              <div class="avatar-circle" style="background:#fdf2f8; color:#db2777;">S</div>
+              <div>
+                <div class="reviewer-name">Sandeep Roy</div>
+                <div class="review-date">Chartered Accountant • 1 week ago</div>
+              </div>
+            </div>
+            <div class="review-stars">★★★★★</div>
+          </div>
+          <p class="review-message">
+            "The client-side privacy guarantee is why I use WorkPDF. Files never leave the browser, which is critical when handling sensitive audit receipts and business papers."
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Matrix Section -->
+  <section class="section-container" id="security">
+    <div class="section-header">
+      <div class="section-tag">Privacy & Architecture</div>
+      <h2 class="section-title">Why Client-Side Processing Matters</h2>
+      <p class="section-description">
+        Comparing client-side browser execution with traditional online converters.
+      </p>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Technical Parameter</th>
+            <th>Traditional Cloud Converters</th>
+            <th>WorkPDF Client Engine</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="highlight-cell">Data Privacy & Leaks</td>
+            <td>Files uploaded to unknown third-party servers</td>
+            <td style="color:var(--emerald); font-weight:700;">100% Local (Files never leave your device)</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Per-Image Size Limits</td>
+            <td>One generic global compression filter</td>
+            <td style="color:var(--emerald); font-weight:700;">Individual target size inputs per page</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Page Separation</td>
+            <td>Frequently merges photos onto one page</td>
+            <td style="color:var(--emerald); font-weight:700;">Guaranteed 1 dedicated A4 page per photo</td>
+          </tr>
+          <tr>
+            <td class="highlight-cell">Offline Capability</td>
+            <td>Fails when internet connection is lost</td>
+            <td style="color:var(--emerald); font-weight:700;">Runs locally in memory even without internet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="section-container" id="faq">
+    <div class="section-header">
+      <div class="section-tag">Common Questions</div>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Will my uploaded document photos be uploaded to any server? <span>▾</span></div>
+        <div class="faq-a">No. All operations, including JPEG compression, rotation, cropping, and PDF compilation, take place locally inside your browser's JavaScript memory. No data is transmitted to any cloud server.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Why does the receiver have trouble downloading images from standard PDFs? <span>▾</span></div>
+        <div class="faq-a">PDF viewers do not support right-click saving of embedded raster graphics. WorkPDF provides both universal clean JPEG streams in PDF and a dedicated ZIP download option so receivers can extract original images directly.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How does the target size (MB/KB) compression work? <span>▾</span></div>
+        <div class="faq-a">The engine runs a binary-search algorithm over canvas resolution and JPEG quality factors until the rendered image binary falls strictly under your specified target limit (e.g. 1024 KB or 500 KB).</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer with Developer Contact Card -->
+  <footer id="contact">
+    <div class="footer-developer-card">
+      <div class="footer-dev-name">Crafted & Engineered by Roshan Singh</div>
+      <p style="font-size:13px; color:var(--text-muted); max-width:440px; margin:0;">
+        Have a feature request, bug report, or looking for custom frontend web tools? Get in touch directly!
+      </p>
+      
+      <div class="footer-links-row">
+        <!-- Email Link with SVG Envelope Icon -->
+        <a href="mailto:roshansingh828754@gmail.com" class="footer-contact-link footer-email">
+          <svg class="contact-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="4" width="20" height="16" rx="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 7L12 13L22 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>roshansingh828754@gmail.com</span>
+        </a>
+
+        <!-- Instagram Link with Official SVG Camera Logo -->
+        <a href="https://instagram.com/roshanprince0.1" target="_blank" rel="noopener noreferrer" class="footer-contact-link footer-insta">
+          <svg class="contact-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          <span>@roshanprince0.1</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-copy">
+      WorkPDF &copy; 2026. Built with privacy-first client architecture. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Interactive Crop Modal -->
+  <div class="modal-overlay" id="cropModal">
+    <div class="cropper-modal-box">
+      <div class="cropper-modal-header">
+        <h4 style="font-size:14px; color:var(--text-dark); font-weight:700;">✂️ Crop Active Photo</h4>
+        <button class="tool-icon-btn" onclick="closeCropModal()">✕</button>
+      </div>
+      <div class="cropper-img-container">
+        <img id="cropperTargetImg" src="" />
+      </div>
+      <div class="cropper-modal-footer">
+        <button class="mini-btn" onclick="closeCropModal()">Cancel</button>
+        <button class="btn btn-dl" onclick="applyCrop()">Apply Crop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Loader Modal -->
+  <div id="loader">
+    <div class="loader-box">
+      <h4 id="loaderTitle" style="font-size:14px; font-weight:700; color:var(--text-dark);">Processing Document...</h4>
+      <div class="bar-bg"><div class="bar-fill" id="barFill"></div></div>
+      <p id="loaderTxt" style="font-size:12px; color:var(--text-muted); font-family:'JetBrains Mono';">Please wait...</p>
+    </div>
+  </div>
+
+  <script>
+    function formatBytes(bytes) {
+      if (!bytes) return '0 B';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / 1048576).toFixed(2) + ' MB';
+    }
+
+    function switchMode(mode) {
+      const tabImages = document.getElementById('tabImages');
+      const tabMerge = document.getElementById('tabMerge');
+      const imageLayout = document.getElementById('imageLayout');
+      const mergeLayout = document.getElementById('mergeLayout');
+      const imageBtnGroup = document.getElementById('imageBtnGroup');
+      const mergeBtnGroup = document.getElementById('mergeBtnGroup');
+
+      if (mode === 'images') {
+        tabImages.classList.add('active');
+        tabMerge.classList.remove('active');
+        imageLayout.style.display = 'flex';
+        mergeLayout.style.display = 'none';
+        imageBtnGroup.style.display = 'flex';
+        mergeBtnGroup.style.display = 'none';
+      } else {
+        tabMerge.classList.add('active');
+        tabImages.classList.remove('active');
+        imageLayout.style.display = 'none';
+        mergeLayout.style.display = 'flex';
+        imageBtnGroup.style.display = 'none';
+        mergeBtnGroup.style.display = 'flex';
+      }
+    }
+
+    /* Core Photos to Multi-Page PDF Engine */
+    let pages = [];
+    let currentIndex = 0;
+    let activeCropper = null;
+
+    function loadImages(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      let loaded = 0;
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            pages.push({
+              id: Date.now() + Math.random(),
+              src: event.target.result,
+              imgObj: img,
+              origSize: file.size,
+              scale: 85,
+              rotation: 0,
+              targetVal: 1024,
+              targetUnit: 'KB',
+              w: img.naturalWidth || 800,
+              h: img.naturalHeight || 600,
+              name: file.name || `Photo_${pages.length + 1}.jpg`
+            });
+            loaded++;
+            if (loaded === files.length) {
+              renderSidebar();
+              showPage(currentIndex);
+            }
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+      e.target.value = '';
+    }
+
+    function renderSidebar() {
+      const list = document.getElementById('thumbsList');
+      const empty = document.getElementById('emptyNotice');
+      const controls = document.getElementById('activeControls');
+
+      if (pages.length === 0) {
+        empty.style.display = 'block';
+        controls.style.display = 'none';
+        list.innerHTML = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      controls.style.display = 'flex';
+      list.innerHTML = '';
+
+      pages.forEach((p, idx) => {
+        const card = document.createElement('div');
+        card.id = `thumb-card-${idx}`;
+        card.className = `thumb-card ${idx === currentIndex ? 'active' : ''}`;
+        card.onclick = () => showPage(idx);
+
+        card.innerHTML = `
+          <div class="thumb-label">
+            <span>P${idx + 1}</span>
+            <span id="thumb-scale-badge-${idx}" style="color:var(--brand-blue);">${p.scale}%</span>
+          </div>
+          <div class="thumb-preview-box">
+            <img id="thumb-img-${idx}" src="${p.src}" style="transform: rotate(${p.rotation}deg) scale(${p.scale / 100});" />
+          </div>
+          <div class="thumb-target-badge" id="thumb-target-badge-${idx}">
+            🎯 ${p.targetVal}${p.targetUnit}
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function showPage(index) {
+      if (pages.length === 0) return;
+      if (index < 0) index = 0;
+      if (index >= pages.length) index = pages.length - 1;
+      currentIndex = index;
+
+      const p = pages[currentIndex];
+
+      document.getElementById('pageIndicator').innerText = `${currentIndex + 1} / ${pages.length}`;
+      document.getElementById('footerPageNum').innerText = `${currentIndex + 1}`;
+      document.getElementById('scaleText').innerText = p.scale + '%';
+      document.getElementById('scaleSlider').value = p.scale;
+      document.getElementById('footerAngle').innerText = `${p.rotation}°`;
+
+      document.getElementById('curTargetVal').value = p.targetVal;
+      document.getElementById('curTargetUnit').value = p.targetUnit;
+      document.getElementById('footerTargetSize').innerText = `${p.targetVal} ${p.targetUnit}`;
+      document.getElementById('footerOrigSize').innerText = formatBytes(p.origSize);
+
+      const mainImg = document.getElementById('mainDisplayImg');
+      mainImg.src = p.src;
+      mainImg.style.transform = `rotate(${p.rotation}deg) scale(${p.scale / 100})`;
+
+      pages.forEach((_, i) => {
+        const card = document.getElementById(`thumb-card-${i}`);
+        if (card) {
+          if (i === currentIndex) card.classList.add('active');
+          else card.classList.remove('active');
+        }
+      });
+    }
+
+    function switchPage(direction) {
+      showPage(currentIndex + direction);
+    }
+
+    function rotateCurrentPage(delta) {
+      if (pages.length === 0) return;
+      let angle = (pages[currentIndex].rotation + delta) % 360;
+      if (angle < 0) angle += 360;
+      pages[currentIndex].rotation = angle;
+
+      document.getElementById('footerAngle').innerText = `${angle}°`;
+      const mainImg = document.getElementById('mainDisplayImg');
+      mainImg.style.transform = `rotate(${angle}deg) scale(${pages[currentIndex].scale / 100})`;
+
+      const thumbImg = document.getElementById(`thumb-img-${currentIndex}`);
+      if (thumbImg) thumbImg.style.transform = `rotate(${angle}deg) scale(${pages[currentIndex].scale / 100})`;
+    }
+
+    function openCropModal() {
+      if (pages.length === 0) return;
+      const modal = document.getElementById('cropModal');
+      const cropImg = document.getElementById('cropperTargetImg');
+      cropImg.src = pages[currentIndex].src;
+
+      modal.style.display = 'flex';
+
+      if (activeCropper) {
+        activeCropper.destroy();
+      }
+
+      activeCropper = new Cropper(cropImg, {
+        viewMode: 1,
+        autoCropArea: 0.85,
+        responsive: true
+      });
+    }
+
+    function closeCropModal() {
+      const modal = document.getElementById('cropModal');
+      modal.style.display = 'none';
+      if (activeCropper) {
+        activeCropper.destroy();
+        activeCropper = null;
+      }
+    }
+
+    function applyCrop() {
+      if (!activeCropper) return;
+      const croppedCanvas = activeCropper.getCroppedCanvas();
+      const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.95);
+
+      const newImg = new Image();
+      newImg.onload = () => {
+        pages[currentIndex].src = croppedDataUrl;
+        pages[currentIndex].imgObj = newImg;
+        pages[currentIndex].w = newImg.naturalWidth;
+        pages[currentIndex].h = newImg.naturalHeight;
+        pages[currentIndex].rotation = 0;
+
+        closeCropModal();
+        renderSidebar();
+        showPage(currentIndex);
+      };
+      newImg.src = croppedDataUrl;
+    }
+
+    function updateCurTargetSize() {
+      if (pages.length === 0) return;
+      const val = parseFloat(document.getElementById('curTargetVal').value) || 1024;
+      const unit = document.getElementById('curTargetUnit').value;
+
+      pages[currentIndex].targetVal = val;
+      pages[currentIndex].targetUnit = unit;
+
+      document.getElementById('footerTargetSize').innerText = `${val} ${unit}`;
+      const badge = document.getElementById(`thumb-target-badge-${currentIndex}`);
+      if (badge) badge.innerText = `🎯 ${val}${unit}`;
+    }
+
+    function setQuickPreset(val, unit) {
+      document.getElementById('curTargetVal').value = val;
+      document.getElementById('curTargetUnit').value = unit;
+      updateCurTargetSize();
+    }
+
+    function changeCurrentScale(val) {
+      if (pages.length === 0) return;
+      const newScale = parseInt(val);
+      pages[currentIndex].scale = newScale;
+
+      document.getElementById('scaleText').innerText = newScale + '%';
+      const mainImg = document.getElementById('mainDisplayImg');
+      mainImg.style.transform = `rotate(${pages[currentIndex].rotation}deg) scale(${newScale / 100})`;
+
+      const thumbBadge = document.getElementById(`thumb-scale-badge-${currentIndex}`);
+      if (thumbBadge) thumbBadge.innerText = newScale + '%';
+
+      const thumbImg = document.getElementById(`thumb-img-${currentIndex}`);
+      if (thumbImg) thumbImg.style.transform = `rotate(${pages[currentIndex].rotation}deg) scale(${newScale / 100})`;
+    }
+
+    function downloadSingleImage(idx) {
+      if (!pages[idx]) return;
+      const link = document.createElement('a');
+      link.href = pages[idx].src;
+      link.download = `Page_${idx + 1}_${pages[idx].name || 'image.jpg'}`;
+      link.click();
+    }
+
+    function deleteCurrentPage() {
+      if (pages.length === 0) return;
+      pages.splice(currentIndex, 1);
+      if (currentIndex >= pages.length) currentIndex = pages.length - 1;
+      renderSidebar();
+      if (pages.length > 0) showPage(currentIndex);
+    }
+
+    function resetAll() {
+      if (confirm("Are you sure you want to clear all loaded pages?")) {
+        pages = [];
+        currentIndex = 0;
+        renderSidebar();
+      }
+    }
+
+    /* Binary Search Compression & In-Memory Rotation */
+    async function compressAndRotateImage(img, rotationAngle, maxBytes) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const isSideways = rotationAngle === 90 || rotationAngle === 270;
+      let origW = img.naturalWidth || img.width;
+      let origH = img.naturalHeight || img.height;
+
+      let drawW = origW;
+      let drawH = origH;
+
+      let maxDim = 2400;
+      if (maxBytes <= 300 * 1024) maxDim = 1400;
+      else if (maxBytes <= 600 * 1024) maxDim = 1800;
+      else if (maxBytes <= 1200 * 1024) maxDim = 2200;
+
+      if (drawW > maxDim || drawH > maxDim) {
+        const s = maxDim / Math.max(drawW, drawH);
+        drawW = Math.round(drawW * s);
+        drawH = Math.round(drawH * s);
+      }
+
+      canvas.width = isSideways ? drawH : drawW;
+      canvas.height = isSideways ? drawW : drawH;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((rotationAngle * Math.PI) / 180);
+      ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      let low = 0.05, high = 0.95;
+      let bestDataUrl = null;
+      let bestBytes = Infinity;
+
+      for (let i = 0; i < 7; i++) {
+        const mid = (low + high) / 2;
+        const dataUrl = canvas.toDataURL('image/jpeg', mid);
+        const bytes = Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 0.75);
+
+        if (bytes <= maxBytes) {
+          bestDataUrl = dataUrl;
+          bestBytes = bytes;
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+
+      if (!bestDataUrl || bestBytes > maxBytes) {
+        bestDataUrl = canvas.toDataURL('image/jpeg', 0.25);
+        bestBytes = Math.round((bestDataUrl.length - bestDataUrl.indexOf(',') - 1) * 0.75);
+      }
+
+      return {
+        dataUrl: bestDataUrl,
+        width: canvas.width,
+        height: canvas.height,
+        actualBytes: bestBytes
+      };
+    }
+
+    /* Compile to Single Multi-Page PDF */
+    async function downloadReceiverFriendlyPDF() {
+      if (pages.length === 0) {
+        alert("Please upload document photos first!");
+        return;
+      }
+
+      const loader = document.getElementById('loader');
+      const bar = document.getElementById('barFill');
+      const txt = document.getElementById('loaderTxt');
+      document.getElementById('loaderTitle').innerText = 'Generating PDF Document...';
+      loader.style.display = 'flex';
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
+
+      const a4W = 210;
+      const a4H = 297;
+      const marginBottom = 20;
+
+      for (let i = 0; i < pages.length; i++) {
+        if (i > 0) doc.addPage('a4', 'p');
+
+        const item = pages[i];
+        const maxBytes = (item.targetUnit === 'MB') ? (item.targetVal * 1024 * 1024) : (item.targetVal * 1024);
+
+        txt.innerText = `Processing Page ${i + 1} of ${pages.length} (Target: ${item.targetVal}${item.targetUnit})...`;
+
+        const comp = await compressAndRotateImage(item.imgObj, item.rotation, maxBytes);
+        const optimizedSrc = comp.dataUrl;
+
+        const factor = item.scale / 100;
+        const maxW = a4W * factor;
+        const maxH = (a4H - marginBottom) * factor;
+        const ratio = comp.width / comp.height;
+
+        let renderW, renderH;
+        if (maxW / maxH < ratio) {
+          renderW = maxW;
+          renderH = maxW / ratio;
+        } else {
+          renderH = maxH;
+          renderW = maxH * ratio;
+        }
+
+        const posX = (a4W - renderW) / 2;
+        const posY = (a4H - marginBottom - renderH) / 2 + 5;
+
+        doc.addImage(optimizedSrc, 'JPEG', posX, posY, renderW, renderH, undefined, 'FAST');
+
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 120);
+        doc.text(`Page ${i + 1} of ${pages.length} (${formatBytes(comp.actualBytes)})`, a4W / 2, a4H - 8, { align: 'center' });
+
+        bar.style.width = Math.round(((i + 1) / pages.length) * 100) + '%';
+        await new Promise(r => setTimeout(r, 8));
+      }
+
+      txt.innerText = 'Finalizing and downloading file...';
+      const pdfBlob = doc.output('blob');
+      const blobUrl = URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `WorkPDF_Document_${pages.length}_Pages.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => {
+        URL.revokeObjectURL(blobUrl);
+        loader.style.display = 'none';
+        bar.style.width = '0%';
+      }, 500);
+    }
+
+    async function downloadAllImagesAsZip() {
+      if (pages.length === 0) {
+        alert("Please upload photos first!");
+        return;
+      }
+
+      const loader = document.getElementById('loader');
+      const bar = document.getElementById('barFill');
+      const txt = document.getElementById('loaderTxt');
+      document.getElementById('loaderTitle').innerText = 'Creating ZIP Archive...';
+      loader.style.display = 'flex';
+
+      const zip = new JSZip();
+      const folder = zip.folder("Images");
+
+      for (let i = 0; i < pages.length; i++) {
+        const item = pages[i];
+        const maxBytes = (item.targetUnit === 'MB') ? (item.targetVal * 1024 * 1024) : (item.targetVal * 1024);
+
+        txt.innerText = `Compressing ${i + 1} of ${pages.length}...`;
+        const comp = await compressAndRotateImage(item.imgObj, item.rotation, maxBytes);
+
+        const base64Data = comp.dataUrl.split(',')[1];
+        folder.file(`Page_${i + 1}_Image.jpg`, base64Data, { base64: true });
+
+        bar.style.width = Math.round(((i + 1) / pages.length) * 100) + '%';
+        await new Promise(r => setTimeout(r, 8));
+      }
+
+      txt.innerText = 'Downloading ZIP...';
+      const content = await zip.generateAsync({ type: 'blob' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(content);
+      link.download = `WorkPDF_${pages.length}_Processed_Photos.zip`;
+      link.click();
+
+      setTimeout(() => {
+        loader.style.display = 'none';
+        bar.style.width = '0%';
+      }, 500);
+    }
+
+    /* PDF Merge Engine */
+    let pdfFiles = [];
+
+    async function loadPDFs(e) {
+      const files = Array.from(e.target.files);
+      if (!files.length) return;
+
+      for (const file of files) {
+        const arrayBuffer = await file.arrayBuffer();
+        pdfFiles.push({
+          id: Date.now() + Math.random(),
+          name: file.name,
+          size: (file.size / 1024).toFixed(1) + ' KB',
+          data: arrayBuffer
+        });
+      }
+      e.target.value = '';
+      renderMergeList();
+    }
+
+    function renderMergeList() {
+      const list = document.getElementById('mergeList');
+      const empty = document.getElementById('mergeEmpty');
+      const count = document.getElementById('mergeCount');
+
+      count.innerText = `${pdfFiles.length} Files`;
+
+      if (pdfFiles.length === 0) {
+        list.innerHTML = '';
+        list.appendChild(empty);
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      list.innerHTML = '';
+
+      pdfFiles.forEach((f, idx) => {
+        const item = document.createElement('div');
+        item.className = 'merge-item';
+        item.innerHTML = `
+          <div style="display:flex; align-items:center; gap:10px; overflow:hidden;">
+            <span class="merge-badge">#${idx + 1}</span>
+            <div style="overflow:hidden;">
+              <b style="color:var(--text-dark); font-size:12px; display:block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;">${f.name}</b>
+              <div style="font-size:11px; color:var(--text-muted);">${f.size}</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:4px;">
+            <button class="mini-btn" onclick="movePDF(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>▲</button>
+            <button class="mini-btn" onclick="movePDF(${idx}, 1)" ${idx === pdfFiles.length - 1 ? 'disabled' : ''}>▼</button>
+            <button class="mini-btn del" onclick="deletePDF(${idx})">✕</button>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function movePDF(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= pdfFiles.length) return;
+      const tmp = pdfFiles[idx];
+      pdfFiles[idx] = pdfFiles[target];
+      pdfFiles[target] = tmp;
+      renderMergeList();
+    }
+
+    function deletePDF(idx) {
+      pdfFiles.splice(idx, 1);
+      renderMergeList();
+    }
+
+    function clearMergeList() {
+      if (confirm("Are you sure you want to clear the PDF merge queue?")) {
+        pdfFiles = [];
+        renderMergeList();
+      }
+    }
+
+    async function mergeAllPDFs() {
+      if (pdfFiles.length < 2) {
+        alert("Please add at least 2 PDF files to perform a merge!");
+        return;
+      }
+
+      const loader = document.getElementById('loader');
+      const bar = document.getElementById('barFill');
+      const txt = document.getElementById('loaderTxt');
+      document.getElementById('loaderTitle').innerText = 'Merging PDF Documents...';
+      loader.style.display = 'flex';
+
+      try {
+        const { PDFDocument } = window.PDFLib;
+        const mergedPdf = await PDFDocument.create();
+
+        for (let i = 0; i < pdfFiles.length; i++) {
+          txt.innerText = `Merging File ${i + 1} of ${pdfFiles.length}...`;
+          bar.style.width = Math.round(((i + 1) / pdfFiles.length) * 100) + '%';
+
+          const currentPdfDoc = await PDFDocument.load(pdfFiles[i].data);
+          const copiedPages = await mergedPdf.copyPages(currentPdfDoc, currentPdfDoc.getPageIndices());
+
+          copiedPages.forEach((page) => mergedPdf.addPage(page));
+          await new Promise(r => setTimeout(r, 10));
+        }
+
+        txt.innerText = 'Downloading merged document...';
+        const mergedPdfBytes = await mergedPdf.save();
+
+        const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `WorkPDF_Merged_${pdfFiles.length}_Documents.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+      } catch (err) {
+        alert("Error merging PDF files. Please ensure none of the selected files are password-protected.");
+      } finally {
+        setTimeout(() => {
+          loader.style.display = 'none';
+          bar.style.width = '0%';
+        }, 500);
+      }
+    }
+
+    /* Star Rating Interaction & Dynamic User Reviews */
+    const stars = document.querySelectorAll('#starRatingBox .star');
+    const ratingInput = document.getElementById('reviewRatingVal');
+
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const val = parseInt(this.getAttribute('data-val'));
+        ratingInput.value = val;
+        stars.forEach(s => {
+          if (parseInt(s.getAttribute('data-val')) <= val) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+      });
+    });
+
+    function submitReview(e) {
+      e.preventDefault();
+      const name = document.getElementById('reviewName').value.trim();
+      const role = document.getElementById('reviewRole').value.trim();
+      const rating = parseInt(ratingInput.value) || 5;
+      const text = document.getElementById('reviewText').value.trim();
+
+      if (!name || !text) return;
+
+      const container = document.getElementById('reviewsContainer');
+      const starString = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+      const firstLetter = name.charAt(0).toUpperCase();
+
+      const newReview = document.createElement('div');
+      newReview.className = 'review-item';
+      newReview.innerHTML = `
+        <div class="review-user-row">
+          <div class="review-avatar-wrap">
+            <div class="avatar-circle" style="background:#ecfdf5; color:#059669;">${firstLetter}</div>
+            <div>
+              <div class="reviewer-name">${name}</div>
+              <div class="review-date">${role} • Just now</div>
+            </div>
+          </div>
+          <div class="review-stars">${starString}</div>
+        </div>
+        <p class="review-message">
+          "${text}"
+        </p>
+      `;
+
+      container.prepend(newReview);
+      document.getElementById('reviewForm').reset();
+
+      // Reset to 5 stars
+      ratingInput.value = 5;
+      stars.forEach(s => s.classList.add('active'));
+
+      alert("Thank you! Your experience and review has been shared successfully.");
+    }
+  </script>
+</body>
+</html>
