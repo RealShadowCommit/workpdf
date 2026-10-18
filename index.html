@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>WorkPDF - Free Client-Side Multi-Page PDF & Media Engine</title>
-<meta name="google-site-verification" content="MNG7zosMyVwj_v7IHNe6Y0LmtdN4g5_PWZSFUqsQ6mg" />
+  <meta name="google-site-verification" content="MNG7zosMyVwj_v7IHNe6Y0LmtdN4g5_PWZSFUqsQ6mg" /> 
   <!-- Google SEO & Metadata -->
   <meta name="description" content="Convert 50+ photos to dedicated multi-page A4 PDFs, crop, rotate 90 degrees, compress to exact MB/KB limits, and merge PDFs client-side with zero data uploads with WorkPDF.">
   <meta name="keywords" content="WorkPDF, photo to pdf, compress image to 1mb, pdf merge, client side pdf maker, rotate crop pdf online">
@@ -170,6 +170,151 @@
     .nav-cta-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    /* 3-Line Hamburger Button (Desktop Hidden) */
+    .nav-actions-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.2s;
+    }
+    .hamburger-btn:hover {
+      background: var(--surface-cream);
+    }
+    .hamburger-btn .bar {
+      width: 20px;
+      height: 2.2px;
+      background: var(--text-dark);
+      border-radius: 2px;
+      transition: all 0.25s ease;
+    }
+
+    /* Mobile Side Drawer (3-Line Menu Drawer) */
+    .side-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .side-drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      right: -310px;
+      width: 290px;
+      max-width: 82vw;
+      height: 100vh;
+      background: #ffffff;
+      border-left: 1px solid var(--border-warm);
+      box-shadow: -10px 0 35px rgba(0, 0, 0, 0.12);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .side-drawer.open {
+      right: 0;
+    }
+
+    .drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-warm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-cream);
+    }
+    .drawer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .drawer-brand img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+    .drawer-brand span {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .drawer-close-btn {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      font-weight: 700;
+    }
+
+    .drawer-menu-list {
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .drawer-link {
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .drawer-link:hover, .drawer-link:active {
+      background: var(--surface-cream);
+      color: var(--brand-blue);
+    }
+    .drawer-link-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+    }
+
+    .drawer-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border-warm);
+      background: var(--bg-cream);
     }
 
     /* Hero Section */
@@ -767,7 +912,7 @@
       line-height: 1.6;
     }
 
-    /* Enhanced Steps Grid with Photographs */
+    /* Steps Grid with Photographs */
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -905,7 +1050,7 @@
       color: var(--text-dark);
     }
 
-    .form-input, .form-textarea, .form-select {
+    .form-input, .form-textarea {
       background: var(--bg-cream);
       border: 1px solid var(--border-warm);
       border-radius: 8px;
@@ -916,7 +1061,7 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .form-input:focus, .form-textarea:focus, .form-select:focus {
+    .form-input:focus, .form-textarea:focus {
       border-color: var(--brand-blue);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       background: #ffffff;
@@ -1007,6 +1152,44 @@
     .review-message {
       font-size: 13px;
       color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* 5 Legal & Safety Assurance Points */
+    .legal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .legal-card {
+      background: #ffffff;
+      border: 1px solid var(--border-warm);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .legal-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-dark);
+    }
+
+    .legal-icon {
+      font-size: 18px;
+    }
+
+    .legal-card-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
       line-height: 1.6;
     }
 
@@ -1217,10 +1400,27 @@
     .bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
     .bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--brand-blue), var(--emerald)); }
 
-    /* Mobile Breakpoints */
+    /* Responsive Design - Mini Screen Controls */
     @media (max-width: 860px) {
-      nav { padding: 12px 16px; }
-      .nav-links { display: none; }
+      nav { 
+        padding: 10px 16px;
+      }
+
+      /* Hide inline menu links on mini screen */
+      .nav-links { 
+        display: none; 
+      }
+
+      /* Show 3-Line Hamburger Button on mini screen */
+      .hamburger-btn {
+        display: flex;
+      }
+
+      .nav-cta-btn {
+        padding: 7px 14px;
+        font-size: 12px;
+      }
+
       .studio-window { height: auto; min-height: 720px; }
       .viewer-layout { flex-direction: column; }
       .canvas-center { padding: 8px; min-height: 480px; }
@@ -1254,19 +1454,76 @@
       <div class="brand-name">WorkPDF</div>
     </a>
 
+    <!-- Desktop Menu Links -->
     <div class="nav-links">
       <a href="#studio" class="nav-link">Studio Editor</a>
       <a href="#features" class="nav-link">Capabilities</a>
       <a href="#how-it-works" class="nav-link">How It Works</a>
-      <a href="#reviews" class="nav-link">User Reviews</a>
-      <a href="#security" class="nav-link">Privacy Matrix</a>
+      <a href="#reviews" class="nav-link">Community</a>
+      <a href="#legal" class="nav-link">Legal Terms</a>
       <a href="#faq" class="nav-link">FAQ</a>
       <a href="#contact" class="nav-link" style="color:var(--brand-blue); font-weight:700;">Contact</a>
     </div>
 
-    <!-- CTA Button to Studio -->
-    <a href="#studio" class="nav-cta-btn">Open Studio</a>
+    <!-- Right Side CTA + 3-Line Hamburger for Mini Screen -->
+    <div class="nav-actions-wrapper">
+      <a href="#studio" class="nav-cta-btn">Open Studio</a>
+      <button class="hamburger-btn" id="drawerToggleBtn" aria-label="Open Navigation Menu" onclick="openSideDrawer()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
   </nav>
+
+  <!-- Side Drawer (3-Line Sliding Side Sheet for Mini Screen) -->
+  <div class="side-drawer-overlay" id="drawerOverlay" onclick="closeSideDrawer()"></div>
+  <aside class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <div class="drawer-brand">
+        <img src="logo.png" alt="WorkPDF Logo">
+        <span>WorkPDF Menu</span>
+      </div>
+      <button class="drawer-close-btn" onclick="closeSideDrawer()" aria-label="Close Menu">✕</button>
+    </div>
+
+    <div class="drawer-menu-list">
+      <a href="#studio" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">📑</span>
+        <span>Studio Editor</span>
+      </a>
+      <a href="#features" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">⚡</span>
+        <span>Capabilities</span>
+      </a>
+      <a href="#how-it-works" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">🔍</span>
+        <span>How It Works</span>
+      </a>
+      <a href="#reviews" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">⭐</span>
+        <span>Community Reviews</span>
+      </a>
+      <a href="#legal" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">⚖️</span>
+        <span>Legal Terms</span>
+      </a>
+      <a href="#faq" class="drawer-link" onclick="closeSideDrawer()">
+        <span class="drawer-link-icon">❓</span>
+        <span>FAQ</span>
+      </a>
+      <a href="#contact" class="drawer-link" onclick="closeSideDrawer()" style="color:var(--brand-blue);">
+        <span class="drawer-link-icon">✉️</span>
+        <span>Contact Developer</span>
+      </a>
+    </div>
+
+    <div class="drawer-footer">
+      <a href="#studio" class="btn btn-add" style="width:100%; justify-content:center; padding:10px;" onclick="closeSideDrawer()">
+        Launch PDF Studio
+      </a>
+    </div>
+  </aside>
 
   <!-- Hero Header Section -->
   <section class="hero-section">
@@ -1557,13 +1814,13 @@
     </div>
   </section>
 
-  <!-- Interactive Experience & Review Section -->
+  <!-- Community Feedback (Real Verified Submissions Only) -->
   <section class="section-container" id="reviews">
     <div class="section-header">
-      <div class="section-tag">Community Feedback</div>
+      <div class="section-tag">User Community</div>
       <h2 class="section-title">Share Your Experience & Reviews</h2>
       <p class="section-description">
-        Tell us how WorkPDF helped your document preparation workflow. Your feedback helps us continuously improve the engine!
+        Real user experiences only. Submitted reviews are stored directly in your browser session for authentic, transparent feedback.
       </p>
     </div>
 
@@ -1581,7 +1838,7 @@
 
           <div class="form-group">
             <label for="reviewRole">Document Use-case</label>
-            <input type="text" id="reviewRole" class="form-input" placeholder="e.g. Job Application / Govt Portal / Office" required />
+            <input type="text" id="reviewRole" class="form-input" placeholder="e.g. Job Application / Govt Portal / Academic" required />
           </div>
 
           <div class="form-group">
@@ -1597,68 +1854,87 @@
           </div>
 
           <div class="form-group">
-            <label for="reviewText">Your Experience</label>
-            <textarea id="reviewText" class="form-textarea" rows="4" placeholder="How was the compression speed, quality, and rotation features?" required></textarea>
+            <label for="reviewText">Your Genuine Feedback</label>
+            <textarea id="reviewText" class="form-textarea" rows="4" placeholder="How was the speed, privacy, and compression accuracy?" required></textarea>
           </div>
 
           <button type="submit" class="btn btn-add" style="width:100%; justify-content:center; padding:11px; margin-top:8px;">
-            Submit Review
+            Submit Genuine Review
           </button>
         </form>
       </div>
 
-      <!-- Live Reviews Stream -->
+      <!-- Live User Reviews Stream (No Fake Reviews) -->
       <div class="reviews-stream" id="reviewsContainer">
-        <!-- Review 1 -->
-        <div class="review-item">
-          <div class="review-user-row">
-            <div class="review-avatar-wrap">
-              <div class="avatar-circle">A</div>
-              <div>
-                <div class="reviewer-name">Amit Verma</div>
-                <div class="review-date">Government Portal Applicant • 2 days ago</div>
-              </div>
-            </div>
-            <div class="review-stars">★★★★★</div>
-          </div>
-          <p class="review-message">
-            "The individual MB compressor is an absolute lifesaver! I had to upload 6 documents strictly under 1MB each for an application. WorkPDF squeezed them perfectly without making the text blurry."
-          </p>
-        </div>
+        <!-- Rendered via JavaScript from localStorage -->
+      </div>
+    </div>
+  </section>
 
-        <!-- Review 2 -->
-        <div class="review-item">
-          <div class="review-user-row">
-            <div class="review-avatar-wrap">
-              <div class="avatar-circle" style="background:#eff6ff; color:#2563eb;">P</div>
-              <div>
-                <div class="reviewer-name">Pooja Nair</div>
-                <div class="review-date">University Student • 4 days ago</div>
-              </div>
-            </div>
-            <div class="review-stars">★★★★★</div>
-          </div>
-          <p class="review-message">
-            "Loved the 90-degree rotate and crop features. Camera captures usually look tilted, but I was able to straighten every page right on the screen before downloading the final PDF."
-          </p>
-        </div>
+  <!-- 5 Professional Legal, Safety & Compliance Points -->
+  <section class="section-container" id="legal">
+    <div class="section-header">
+      <div class="section-tag">Terms & Safety Disclaimers</div>
+      <h2 class="section-title">5-Point Legal & Usage Transparency</h2>
+      <p class="section-description">
+        Clear, comprehensive legal disclosures safeguarding both our users and developers under international and Indian IT compliance frameworks.
+      </p>
+    </div>
 
-        <!-- Review 3 -->
-        <div class="review-item">
-          <div class="review-user-row">
-            <div class="review-avatar-wrap">
-              <div class="avatar-circle" style="background:#fdf2f8; color:#db2777;">S</div>
-              <div>
-                <div class="reviewer-name">Sandeep Roy</div>
-                <div class="review-date">Chartered Accountant • 1 week ago</div>
-              </div>
-            </div>
-            <div class="review-stars">★★★★★</div>
-          </div>
-          <p class="review-message">
-            "The client-side privacy guarantee is why I use WorkPDF. Files never leave the browser, which is critical when handling sensitive audit receipts and business papers."
-          </p>
+    <div class="legal-grid">
+      <!-- Point 1 -->
+      <div class="legal-card">
+        <div class="legal-card-header">
+          <span class="legal-icon">🔒</span>
+          <span>1. 100% Client-Side Privacy Policy</span>
         </div>
+        <p class="legal-card-text">
+          WorkPDF functions purely inside your browser memory (RAM) using HTML5 Canvas and WebAssembly. No files, metadata, photos, or compiled PDFs are ever uploaded, transmitted, scanned, or stored on any remote cloud server. Your documents never leave your local device.
+        </p>
+      </div>
+
+      <!-- Point 2 -->
+      <div class="legal-card">
+        <div class="legal-card-header">
+          <span class="legal-icon">⚖️</span>
+          <span>2. 'As-Is' Service & Limitation of Liability</span>
+        </div>
+        <p class="legal-card-text">
+          WorkPDF is provided on an 'as is' and 'as available' basis without warranties of any kind. The developers are not liable for any missed application deadlines, rejection of files by government/academic portals, technical delays, or accidental device-side data loss.
+        </p>
+      </div>
+
+      <!-- Point 3 -->
+      <div class="legal-card">
+        <div class="legal-card-header">
+          <span class="legal-icon">👁️</span>
+          <span>3. Mandatory User Verification Advisory</span>
+        </div>
+        <p class="legal-card-text">
+          Target size compression utilizes dynamic resolution downscaling. Users bear the sole responsibility to open, inspect, and verify the readability of downloaded PDF pages, signatures, barcodes, and stamps prior to submitting them to official examination or legal authorities.
+        </p>
+      </div>
+
+      <!-- Point 4 -->
+      <div class="legal-card">
+        <div class="legal-card-header">
+          <span class="legal-icon">📜</span>
+          <span>4. Intellectual Property & File Ownership</span>
+        </div>
+        <p class="legal-card-text">
+          Users retain full, uncompromised intellectual property rights and copyrights over all images and documents processed. WorkPDF makes no ownership claims over your work. WorkPDF itself is an independently built client utility using permissive open-source licenses (MIT/Apache 2.0).
+        </p>
+      </div>
+
+      <!-- Point 5 -->
+      <div class="legal-card">
+        <div class="legal-card-header">
+          <span class="legal-icon">🛡️</span>
+          <span>5. Trademark & Fair Use Disclosures</span>
+        </div>
+        <p class="legal-card-text">
+          Portable Document Format (PDF) is an open international standard (ISO 32000-1). WorkPDF is an independent, non-affiliated utility and is not associated with, endorsed by, or sponsored by Adobe Systems Inc. Any external trademarks referenced belong to their respective owners.
+        </p>
       </div>
     </div>
   </section>
@@ -1751,7 +2027,7 @@
           <span>roshansingh828754@gmail.com</span>
         </a>
 
-        <!-- Instagram Link with Official SVG Camera Logo -->
+        <!-- Instagram Link Updated to roshanprince0.2 -->
         <a href="https://instagram.com/roshanprince0.2" target="_blank" rel="noopener noreferrer" class="footer-contact-link footer-insta">
           <svg class="contact-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -1795,6 +2071,19 @@
   </div>
 
   <script>
+    /* Side Drawer Navigation (Mini Screen 3-Line Menu) */
+    function openSideDrawer() {
+      document.getElementById('sideDrawer').classList.add('open');
+      document.getElementById('drawerOverlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSideDrawer() {
+      document.getElementById('sideDrawer').classList.remove('open');
+      document.getElementById('drawerOverlay').classList.remove('open');
+      document.body.style.overflow = 'auto';
+    }
+
     function formatBytes(bytes) {
       if (!bytes) return '0 B';
       if (bytes < 1024) return bytes + ' B';
@@ -2378,7 +2667,7 @@
       }
     }
 
-    /* Star Rating Interaction & Dynamic User Reviews */
+    /* Star Rating Interaction & Pure Verified Community Reviews */
     const stars = document.querySelectorAll('#starRatingBox .star');
     const ratingInput = document.getElementById('reviewRatingVal');
 
@@ -2396,6 +2685,47 @@
       });
     });
 
+    function loadSavedReviews() {
+      const container = document.getElementById('reviewsContainer');
+      const saved = JSON.parse(localStorage.getItem('workpdf_reviews') || '[]');
+      
+      if (saved.length === 0) {
+        container.innerHTML = `
+          <div class="review-item" style="text-align:center; padding:35px 20px;">
+            <div style="font-size:32px; margin-bottom:8px;">💬</div>
+            <h4 style="font-size:15px; font-weight:800; color:var(--text-dark); margin-bottom:4px;">No reviews submitted yet</h4>
+            <p style="font-size:12.5px; color:var(--text-muted); margin:0 auto; max-width:360px;">
+              Be the first user to share your compression and document workflow experience!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      saved.forEach(r => {
+        const starString = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+        const firstLetter = r.name.charAt(0).toUpperCase();
+
+        const div = document.createElement('div');
+        div.className = 'review-item';
+        div.innerHTML = `
+          <div class="review-user-row">
+            <div class="review-avatar-wrap">
+              <div class="avatar-circle">${firstLetter}</div>
+              <div>
+                <div class="reviewer-name">${r.name}</div>
+                <div class="review-date">${r.role} • ${r.date}</div>
+              </div>
+            </div>
+            <div class="review-stars">${starString}</div>
+          </div>
+          <p class="review-message">"${r.text}"</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
     function submitReview(e) {
       e.preventDefault();
       const name = document.getElementById('reviewName').value.trim();
@@ -2405,37 +2735,28 @@
 
       if (!name || !text) return;
 
-      const container = document.getElementById('reviewsContainer');
-      const starString = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-      const firstLetter = name.charAt(0).toUpperCase();
+      const newReview = {
+        name: name,
+        role: role,
+        rating: rating,
+        text: text,
+        date: 'Just now'
+      };
 
-      const newReview = document.createElement('div');
-      newReview.className = 'review-item';
-      newReview.innerHTML = `
-        <div class="review-user-row">
-          <div class="review-avatar-wrap">
-            <div class="avatar-circle" style="background:#ecfdf5; color:#059669;">${firstLetter}</div>
-            <div>
-              <div class="reviewer-name">${name}</div>
-              <div class="review-date">${role} • Just now</div>
-            </div>
-          </div>
-          <div class="review-stars">${starString}</div>
-        </div>
-        <p class="review-message">
-          "${text}"
-        </p>
-      `;
+      const saved = JSON.parse(localStorage.getItem('workpdf_reviews') || '[]');
+      saved.unshift(newReview);
+      localStorage.setItem('workpdf_reviews', JSON.stringify(saved));
 
-      container.prepend(newReview);
       document.getElementById('reviewForm').reset();
-
-      // Reset to 5 stars
       ratingInput.value = 5;
       stars.forEach(s => s.classList.add('active'));
 
-      alert("Thank you! Your experience and review has been shared successfully.");
+      loadSavedReviews();
+      alert("Thank you! Your genuine review has been recorded successfully.");
     }
+
+    // Initialize clean reviews
+    document.addEventListener('DOMContentLoaded', loadSavedReviews);
   </script>
 </body>
 </html>
