@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>WorkPDF - Free Client-Side Multi-Page PDF & Media Engine</title>
+  <title>HappyPDF - Free Client-Side Multi-Page PDF & Media Engine</title>
   <meta name="google-site-verification" content="MNG7zosMyVwj_v7IHNe6Y0LmtdN4g5_PWZSFUqsQ6mg" />
   <!-- Google SEO & Metadata -->
-  <meta name="description" content="Convert 50+ photos to dedicated multi-page A4 PDFs, crop, rotate 90 degrees, compress to exact MB/KB limits, and merge PDFs client-side with zero data uploads with WorkPDF.">
-  <meta name="keywords" content="WorkPDF, photo to pdf, compress image to 1mb, pdf merge, client side pdf maker, rotate crop pdf online">
+  <meta name="description" content="Convert 50+ photos to dedicated multi-page A4 PDFs, crop, rotate 90 degrees, compress to exact MB/KB limits, and merge PDFs client-side with zero data uploads with HappyPDF.">
+  <meta name="keywords" content="HappyPDF, photo to pdf, compress image to 1mb, pdf merge, client side pdf maker, rotate crop pdf online">
   <meta name="author" content="Roshan Singh">
 
-  <!-- Open Graph & Social Indexing -->
-  <meta property="og:title" content="WorkPDF - Client-Side PDF & Media Engine">
+  <!-- Open Graph & Social Preview -->
+  <meta property="og:title" content="HappyPDF - Client-Side PDF & Media Engine">
   <meta property="og:description" content="High-precision multi-page PDF generation, independent image compression, edge cropping, and PDF merging.">
   <meta property="og:image" content="logo.png">
   <meta property="og:type" content="website">
 
-  <!-- Favicon / Logo for Browser Tabs & Google Search -->
+  <!-- Address Bar Logo (Favicon) -->
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
 
@@ -25,7 +25,7 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "WorkPDF",
+    "name": "HappyPDF",
     "description": "Client-side private tool to generate multi-page PDFs from images with per-page MB compression and merging.",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
@@ -99,7 +99,7 @@
       z-index: 0;
     }
 
-    /* Navigation */
+    /* Navigation Bar */
     nav {
       position: sticky;
       top: 0;
@@ -118,20 +118,21 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
     }
 
+    /* Standard Logo Size in Bar */
     .brand-logo-img {
-      width: 38px;
-      height: 38px;
+      width: 32px;
+      height: 32px;
       object-fit: contain;
-      border-radius: 8px;
+      border-radius: 6px;
       background: #ffffff;
       padding: 2px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       border: 1px solid var(--border-warm);
       display: block;
+      box-shadow: var(--shadow-sm);
     }
 
     .brand-name {
@@ -159,7 +160,7 @@
     .nav-cta-btn {
       background: var(--brand-blue);
       color: #fff;
-      padding: 9px 20px;
+      padding: 8px 18px;
       border-radius: 8px;
       text-decoration: none;
       font-size: 13px;
@@ -172,7 +173,6 @@
       box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
     }
 
-    /* 3-Line Hamburger Button (Desktop Hidden) */
     .nav-actions-wrapper {
       display: flex;
       align-items: center;
@@ -185,8 +185,8 @@
       justify-content: center;
       align-items: center;
       gap: 5px;
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       background: #ffffff;
       border: 1px solid var(--border-warm);
       border-radius: 8px;
@@ -198,14 +198,14 @@
       background: var(--surface-cream);
     }
     .hamburger-btn .bar {
-      width: 20px;
-      height: 2.2px;
+      width: 18px;
+      height: 2px;
       background: var(--text-dark);
       border-radius: 2px;
       transition: all 0.25s ease;
     }
 
-    /* Mobile Side Drawer (3-Line Menu Drawer) */
+    /* Mobile Side Drawer */
     .side-drawer-overlay {
       position: fixed;
       inset: 0;
@@ -254,10 +254,14 @@
       align-items: center;
       gap: 10px;
     }
-    .drawer-brand img {
+    .drawer-brand-img {
       width: 28px;
       height: 28px;
       object-fit: contain;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 2px;
+      border: 1px solid var(--border-warm);
     }
     .drawer-brand span {
       font-size: 16px;
@@ -818,7 +822,7 @@
       border-radius: 20px;
     }
 
-    /* Long Page Showcase Cards */
+    /* Showcase Cards */
     .section-container {
       max-width: 1200px;
       margin: 0 auto 100px auto;
@@ -877,20 +881,14 @@
       box-shadow: var(--shadow-md);
     }
 
-    .card-img-wrap {
+    .card-banner-graphic {
       width: 100%;
-      height: 170px;
-      overflow: hidden;
-      position: relative;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-warm);
     }
-
-    .card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s;
-    }
-    .feature-card:hover .card-img-wrap img { transform: scale(1.05); }
 
     .card-content {
       padding: 22px;
@@ -912,7 +910,7 @@
       line-height: 1.6;
     }
 
-    /* Steps Grid with Photographs */
+    /* Steps Grid with Vector Icons */
     .steps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -936,36 +934,29 @@
       box-shadow: var(--shadow-md);
     }
 
-    .step-img-wrap {
+    .step-icon-wrap {
       width: 100%;
-      height: 190px;
+      height: 150px;
       position: relative;
-      overflow: hidden;
-      background: #f1f5f9;
-    }
-
-    .step-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.35s ease;
-    }
-    .step-card:hover .step-img-wrap img {
-      transform: scale(1.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-warm);
     }
 
     .step-number-pill {
       position: absolute;
       top: 14px;
       left: 14px;
-      background: rgba(37, 99, 235, 0.92);
+      background: rgba(37, 99, 235, 0.95);
       color: #ffffff;
       padding: 4px 12px;
       border-radius: 20px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 2;
     }
 
     .step-body {
@@ -1098,12 +1089,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .review-user-row {
@@ -1155,7 +1140,7 @@
       line-height: 1.6;
     }
 
-    /* 5 Legal & Safety Assurance Points */
+    /* 5 Legal & Safety Points */
     .legal-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1400,27 +1385,21 @@
     .bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
     .bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--brand-blue), var(--emerald)); }
 
-    /* Responsive Design - Mini Screen Controls */
+    /* Responsive Design */
     @media (max-width: 860px) {
       nav { 
         padding: 10px 16px;
       }
-
-      /* Hide inline menu links on mini screen */
       .nav-links { 
         display: none; 
       }
-
-      /* Show 3-Line Hamburger Button on mini screen */
       .hamburger-btn {
         display: flex;
       }
-
       .nav-cta-btn {
         padding: 7px 14px;
         font-size: 12px;
       }
-
       .studio-window { height: auto; min-height: 720px; }
       .viewer-layout { flex-direction: column; }
       .canvas-center { padding: 8px; min-height: 480px; }
@@ -1447,14 +1426,14 @@
 
   <div class="bg-grid-overlay"></div>
 
-  <!-- Top Sticky Navigation Bar -->
+  <!-- Top Navigation Bar -->
   <nav>
     <a href="#" class="nav-brand">
-      <img src="logo.png" alt="WorkPDF Logo" class="brand-logo-img">
-      <div class="brand-name">WorkPDF</div>
+      <img src="logo.png" alt="HappyPDF Logo" class="brand-logo-img">
+      <div class="brand-name">HappyPDF</div>
     </a>
 
-    <!-- Desktop Menu Links -->
+    <!-- Desktop Navigation Links -->
     <div class="nav-links">
       <a href="#studio" class="nav-link">Studio Editor</a>
       <a href="#features" class="nav-link">Capabilities</a>
@@ -1465,7 +1444,7 @@
       <a href="#contact" class="nav-link" style="color:var(--brand-blue); font-weight:700;">Contact</a>
     </div>
 
-    <!-- Right Side CTA + 3-Line Hamburger for Mini Screen -->
+    <!-- Right Actions + Mobile 3-Line Menu -->
     <div class="nav-actions-wrapper">
       <a href="#studio" class="nav-cta-btn">Open Studio</a>
       <button class="hamburger-btn" id="drawerToggleBtn" aria-label="Open Navigation Menu" onclick="openSideDrawer()">
@@ -1476,13 +1455,13 @@
     </div>
   </nav>
 
-  <!-- Side Drawer (3-Line Sliding Side Sheet for Mini Screen) -->
+  <!-- Mobile Side Drawer -->
   <div class="side-drawer-overlay" id="drawerOverlay" onclick="closeSideDrawer()"></div>
   <aside class="side-drawer" id="sideDrawer">
     <div class="drawer-header">
       <div class="drawer-brand">
-        <img src="logo.png" alt="WorkPDF Logo">
-        <span>WorkPDF Menu</span>
+        <img src="logo.png" alt="HappyPDF Logo" class="drawer-brand-img">
+        <span>HappyPDF Menu</span>
       </div>
       <button class="drawer-close-btn" onclick="closeSideDrawer()" aria-label="Close Menu">✕</button>
     </div>
@@ -1528,7 +1507,7 @@
   <!-- Hero Header Section -->
   <section class="hero-section">
     <div class="hero-badge">
-      <img src="logo.png" alt="WorkPDF Icon" style="width:16px; height:16px; object-fit:contain;">
+      <span style="font-size:14px;">⚡</span>
       <span>100% Client-Side Privacy Engine</span>
     </div>
 
@@ -1536,23 +1515,23 @@
       Transform Images into <span>Universal Multi-Page PDFs</span> With Zero Compression Loss
     </h1>
     <p class="hero-subtitle">
-      Convert 50+ document photos into dedicated single-page PDF files, merge existing PDF documents, crop edges, rotate orientation, and enforce strict file-size limits (MB/KB)—entirely inside your browser with zero server uploads with WorkPDF.
+      Convert 50+ document photos into dedicated single-page PDF files, merge existing PDF documents, crop edges, rotate orientation, and enforce strict file-size limits (MB/KB)—entirely inside your browser with zero server uploads with HappyPDF.
     </p>
     <div class="hero-buttons">
-      <a href="#studio" class="nav-cta-btn" style="padding: 12px 28px; font-size: 14px;">Launch WorkPDF</a>
+      <a href="#studio" class="nav-cta-btn" style="padding: 12px 28px; font-size: 14px;">Launch HappyPDF</a>
       <a href="#reviews" class="btn" style="background: #ffffff; border: 1px solid var(--border-warm); color: var(--text-dark); padding: 12px 24px; font-size: 14px;">Share Experience</a>
     </div>
   </section>
 
-  <!-- Live Studio Section -->
+  <!-- Live Studio Workspace -->
   <section class="studio-section" id="studio">
     <div class="studio-window">
       
       <!-- Studio Header Controls -->
       <div class="studio-header">
         <div class="studio-title">
-          <img src="logo.png" alt="Icon" style="width:20px; height:20px; object-fit:contain;">
-          <span>WorkPDF Workspace</span>
+          <span>📑</span>
+          <span>HappyPDF Workspace</span>
           <span style="font-size:10px; background:#eff6ff; color:var(--brand-blue); border:1px solid #bfdbfe; padding:2px 8px; border-radius:12px; text-transform:uppercase;">Engine v3.5</span>
         </div>
 
@@ -1644,7 +1623,7 @@
             <!-- Empty Guidance Notice -->
             <div class="empty-state" id="emptyNotice">
               <div class="empty-icon">📁</div>
-              <h3 class="empty-heading">No Photos Loaded in WorkPDF Studio</h3>
+              <h3 class="empty-heading">No Photos Loaded in HappyPDF Studio</h3>
               <p class="empty-paragraph">
                 Select your photos (up to 50+ images). Each photo will be automatically transformed into an independent A4 PDF page with dedicated size compression limits, interactive cropping, and orientation alignment.
               </p>
@@ -1694,21 +1673,27 @@
     </div>
   </section>
 
-  <!-- Showcase Section with Photography -->
+  <!-- Capabilities Showcase Section -->
   <section class="section-container" id="features">
     <div class="section-header">
       <div class="section-tag">Core Architecture</div>
       <h2 class="section-title">Built for Precision Document Workflows</h2>
       <p class="section-description">
-        Whether you are preparing multi-page government applications, academic portfolios, legal documentation, or archiving receipts, WorkPDF executes every operation with high visual integrity.
+        Whether you are preparing multi-page government applications, academic portfolios, legal documentation, or archiving receipts, HappyPDF executes every operation with high visual integrity.
       </p>
     </div>
 
     <div class="features-grid">
       <!-- Card 1 -->
       <div class="feature-card">
-        <div class="card-img-wrap">
-          <img src="https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=600&q=80" alt="Document Processing" />
+        <div class="card-banner-graphic" style="background:#eff6ff;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
         </div>
         <div class="card-content">
           <h3 class="card-title">1 Photo = 1 Dedicated Page</h3>
@@ -1720,8 +1705,12 @@
 
       <!-- Card 2 -->
       <div class="feature-card">
-        <div class="card-img-wrap">
-          <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80" alt="Client Side Security" />
+        <div class="card-banner-graphic" style="background:#ecfdf5;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+            <path d="M12 12v9"></path>
+            <path d="m8 17 4 4 4-4"></path>
+          </svg>
         </div>
         <div class="card-content">
           <h3 class="card-title">Strict Size Limitation (MB/KB)</h3>
@@ -1733,8 +1722,11 @@
 
       <!-- Card 3 -->
       <div class="feature-card">
-        <div class="card-img-wrap">
-          <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80" alt="Interactive Crop" />
+        <div class="card-banner-graphic" style="background:#fef3c7;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2v14a2 2 0 0 0 2 2h14"></path>
+            <path d="M18 22V8a2 2 0 0 0-2-2H2"></path>
+          </svg>
         </div>
         <div class="card-content">
           <h3 class="card-title">Precision Crop & 90° Rotation</h3>
@@ -1746,8 +1738,12 @@
 
       <!-- Card 4 -->
       <div class="feature-card">
-        <div class="card-img-wrap">
-          <img src="https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=600&q=80" alt="Archive PDF" />
+        <div class="card-banner-graphic" style="background:#f5f3ff;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m9 15 3-3 3 3"></path>
+            <path d="m9 9 3 3 3-3"></path>
+          </svg>
         </div>
         <div class="card-content">
           <h3 class="card-title">Fast In-Memory PDF Merger</h3>
@@ -1759,36 +1755,45 @@
     </div>
   </section>
 
-  <!-- How It Works Section with Step Photographs -->
+  <!-- How It Works Section (Clean Icons Instead of Images) -->
   <section class="section-container" id="how-it-works">
     <div class="section-header">
       <div class="section-tag">Step-by-Step Workflow</div>
       <h2 class="section-title">How To Create & Optimize Documents</h2>
       <p class="section-description">
-        Three simple, visual steps from raw camera captures to professional, portal-ready PDF files with WorkPDF.
+        Three simple, visual steps from raw camera captures to professional, portal-ready PDF files with HappyPDF.
       </p>
     </div>
 
     <div class="steps-grid">
-      <!-- Step 1 with Photo -->
+      <!-- Step 1 Vector Icon -->
       <div class="step-card">
-        <div class="step-img-wrap">
-          <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80" alt="Batch Photo Upload Step" />
+        <div class="step-icon-wrap" style="background:#eff6ff;">
           <span class="step-number-pill">STEP 01</span>
+          <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
         </div>
         <div class="step-body">
           <h3 class="step-title">Upload Batch Photos</h3>
           <p class="step-text">
-            Drag and drop or select up to 50+ photos from your phone gallery or PC. WorkPDF immediately allocates an independent A4 canvas sheet for every uploaded image.
+            Drag and drop or select up to 50+ photos from your phone gallery or PC. HappyPDF immediately allocates an independent A4 canvas sheet for every uploaded image.
           </p>
         </div>
       </div>
 
-      <!-- Step 2 with Photo -->
+      <!-- Step 2 Vector Icon -->
       <div class="step-card">
-        <div class="step-img-wrap">
-          <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=600&q=80" alt="Interactive Crop and Compress Step" />
+        <div class="step-icon-wrap" style="background:#ecfdf5;">
           <span class="step-number-pill">STEP 02</span>
+          <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+            <path d="M16 21h5v-5"></path>
+          </svg>
         </div>
         <div class="step-body">
           <h3 class="step-title">Set Angles, Crop & Size</h3>
@@ -1798,11 +1803,15 @@
         </div>
       </div>
 
-      <!-- Step 3 with Photo -->
+      <!-- Step 3 Vector Icon -->
       <div class="step-card">
-        <div class="step-img-wrap">
-          <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=80" alt="Compile Multi-Page PDF Step" />
+        <div class="step-icon-wrap" style="background:#faf5ff;">
           <span class="step-number-pill">STEP 03</span>
+          <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
         </div>
         <div class="step-body">
           <h3 class="step-title">Compile Single PDF or ZIP</h3>
@@ -1814,7 +1823,7 @@
     </div>
   </section>
 
-  <!-- Community Feedback (Real Verified Submissions Only) -->
+  <!-- Community Feedback -->
   <section class="section-container" id="reviews">
     <div class="section-header">
       <div class="section-tag">User Community</div>
@@ -1864,14 +1873,12 @@
         </form>
       </div>
 
-      <!-- Live User Reviews Stream (No Fake Reviews) -->
-      <div class="reviews-stream" id="reviewsContainer">
-        <!-- Rendered via JavaScript from localStorage -->
-      </div>
+      <!-- Live User Reviews Stream -->
+      <div class="reviews-stream" id="reviewsContainer"></div>
     </div>
   </section>
 
-  <!-- 5 Professional Legal, Safety & Compliance Points -->
+  <!-- 5 Professional Legal Points -->
   <section class="section-container" id="legal">
     <div class="section-header">
       <div class="section-tag">Terms & Safety Disclaimers</div>
@@ -1889,7 +1896,7 @@
           <span>1. 100% Client-Side Privacy Policy</span>
         </div>
         <p class="legal-card-text">
-          WorkPDF functions purely inside your browser memory (RAM) using HTML5 Canvas and WebAssembly. No files, metadata, photos, or compiled PDFs are ever uploaded, transmitted, scanned, or stored on any remote cloud server. Your documents never leave your local device.
+          HappyPDF functions purely inside your browser memory (RAM) using HTML5 Canvas and WebAssembly. No files, metadata, photos, or compiled PDFs are ever uploaded, transmitted, scanned, or stored on any remote cloud server. Your documents never leave your local device.
         </p>
       </div>
 
@@ -1900,7 +1907,7 @@
           <span>2. 'As-Is' Service & Limitation of Liability</span>
         </div>
         <p class="legal-card-text">
-          WorkPDF is provided on an 'as is' and 'as available' basis without warranties of any kind. The developers are not liable for any missed application deadlines, rejection of files by government/academic portals, technical delays, or accidental device-side data loss.
+          HappyPDF is provided on an 'as is' and 'as available' basis without warranties of any kind. The developers are not liable for any missed application deadlines, rejection of files by government/academic portals, technical delays, or accidental device-side data loss.
         </p>
       </div>
 
@@ -1922,7 +1929,7 @@
           <span>4. Intellectual Property & File Ownership</span>
         </div>
         <p class="legal-card-text">
-          Users retain full, uncompromised intellectual property rights and copyrights over all images and documents processed. WorkPDF makes no ownership claims over your work. WorkPDF itself is an independently built client utility using permissive open-source licenses (MIT/Apache 2.0).
+          Users retain full, uncompromised intellectual property rights and copyrights over all images and documents processed. HappyPDF makes no ownership claims over your work. HappyPDF itself is an independently built client utility using permissive open-source licenses (MIT/Apache 2.0).
         </p>
       </div>
 
@@ -1933,7 +1940,7 @@
           <span>5. Trademark & Fair Use Disclosures</span>
         </div>
         <p class="legal-card-text">
-          Portable Document Format (PDF) is an open international standard (ISO 32000-1). WorkPDF is an independent, non-affiliated utility and is not associated with, endorsed by, or sponsored by Adobe Systems Inc. Any external trademarks referenced belong to their respective owners.
+          Portable Document Format (PDF) is an open international standard (ISO 32000-1). HappyPDF is an independent, non-affiliated utility and is not associated with, endorsed by, or sponsored by Adobe Systems Inc. Any external trademarks referenced belong to their respective owners.
         </p>
       </div>
     </div>
@@ -1955,7 +1962,7 @@
           <tr>
             <th>Technical Parameter</th>
             <th>Traditional Cloud Converters</th>
-            <th>WorkPDF Client Engine</th>
+            <th>HappyPDF Client Engine</th>
           </tr>
         </thead>
         <tbody>
@@ -1999,7 +2006,7 @@
 
       <div class="faq-item">
         <div class="faq-q">Why does the receiver have trouble downloading images from standard PDFs? <span>▾</span></div>
-        <div class="faq-a">PDF viewers do not support right-click saving of embedded raster graphics. WorkPDF provides both universal clean JPEG streams in PDF and a dedicated ZIP download option so receivers can extract original images directly.</div>
+        <div class="faq-a">PDF viewers do not support right-click saving of embedded raster graphics. HappyPDF provides both universal clean JPEG streams in PDF and a dedicated ZIP download option so receivers can extract original images directly.</div>
       </div>
 
       <div class="faq-item">
@@ -2018,7 +2025,7 @@
       </p>
       
       <div class="footer-links-row">
-        <!-- Email Link with SVG Envelope Icon -->
+        <!-- Developer Email Link -->
         <a href="mailto:roshansingh828754@gmail.com" class="footer-contact-link footer-email">
           <svg class="contact-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="2" y="4" width="20" height="16" rx="3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2027,7 +2034,7 @@
           <span>roshansingh828754@gmail.com</span>
         </a>
 
-        <!-- Instagram Link Updated to roshanprince0.2 -->
+        <!-- Developer Instagram Link -->
         <a href="https://instagram.com/roshanprince0.2" target="_blank" rel="noopener noreferrer" class="footer-contact-link footer-insta">
           <svg class="contact-icon-svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -2040,7 +2047,7 @@
     </div>
 
     <div class="footer-copy">
-      WorkPDF &copy; 2026. Built with privacy-first client architecture. All rights reserved.
+      HappyPDF &copy; 2026. Built with privacy-first client architecture. All rights reserved.
     </div>
   </footer>
 
@@ -2486,7 +2493,7 @@
       const blobUrl = URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
       const a = document.createElement('a');
       a.href = blobUrl;
-      a.download = `WorkPDF_Document_${pages.length}_Pages.pdf`;
+      a.download = `HappyPDF_Document_${pages.length}_Pages.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -2531,7 +2538,7 @@
       const content = await zip.generateAsync({ type: 'blob' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(content);
-      link.download = `WorkPDF_${pages.length}_Processed_Photos.zip`;
+      link.download = `HappyPDF_${pages.length}_Processed_Photos.zip`;
       link.click();
 
       setTimeout(() => {
@@ -2652,7 +2659,7 @@
         const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `WorkPDF_Merged_${pdfFiles.length}_Documents.pdf`;
+        link.download = `HappyPDF_Merged_${pdfFiles.length}_Documents.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -2667,7 +2674,7 @@
       }
     }
 
-    /* Star Rating Interaction & Pure Verified Community Reviews */
+    /* Star Rating Interaction & Dynamic User Reviews */
     const stars = document.querySelectorAll('#starRatingBox .star');
     const ratingInput = document.getElementById('reviewRatingVal');
 
@@ -2687,7 +2694,7 @@
 
     function loadSavedReviews() {
       const container = document.getElementById('reviewsContainer');
-      const saved = JSON.parse(localStorage.getItem('workpdf_reviews') || '[]');
+      const saved = JSON.parse(localStorage.getItem('happypdf_reviews') || '[]');
       
       if (saved.length === 0) {
         container.innerHTML = `
@@ -2743,9 +2750,9 @@
         date: 'Just now'
       };
 
-      const saved = JSON.parse(localStorage.getItem('workpdf_reviews') || '[]');
+      const saved = JSON.parse(localStorage.getItem('happypdf_reviews') || '[]');
       saved.unshift(newReview);
-      localStorage.setItem('workpdf_reviews', JSON.stringify(saved));
+      localStorage.setItem('happypdf_reviews', JSON.stringify(saved));
 
       document.getElementById('reviewForm').reset();
       ratingInput.value = 5;
@@ -2755,7 +2762,6 @@
       alert("Thank you! Your genuine review has been recorded successfully.");
     }
 
-    // Initialize clean reviews
     document.addEventListener('DOMContentLoaded', loadSavedReviews);
   </script>
 </body>
